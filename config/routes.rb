@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   resources :users
+  resources :account_activations, only: [:edit]
 
   get "/signup", to: "users#new"
   get "/help", to: "static_pages#help" #,name: 'help'
