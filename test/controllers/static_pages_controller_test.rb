@@ -3,6 +3,7 @@ require "test_helper"
 class StaticPagesControllerTest < ActionDispatch::IntegrationTest
   def setup
     @base_title = "Ruby on Rails Tutorial Sample App"
+    @user = users(:michael)
   end
 
   test "should get root" do
@@ -43,5 +44,14 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", users_path
     assert_select "a[href=?]", user_path(user)
     assert_select "a[href=?]", edit_user_path(user)
+  end
+
+  test "test profile stats on home page" do
+    log_in_as(@user)
+    get root_path(@user)
+    assert_template "static_pages/home"
+    assert_select "div.stats", count: 1
+    assert_match @user.following.count.to_s, response.body
+    assert_match @user.followers.count.to_s, response.body
   end
 end
